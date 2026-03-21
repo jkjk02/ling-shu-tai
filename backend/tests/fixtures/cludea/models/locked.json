@@ -1,0 +1,7 @@
+{
+  "name": "Locked MCP",
+  "description": "Discovered MCP fixture outside the writable mcps directory.",
+  "model_name": "claude-locked",
+  "temperature": 0.2,
+  "max_tokens": 1024
+}

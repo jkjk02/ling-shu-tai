@@ -1,0 +1,22 @@
+[
+  {
+    "id": "opencode-default-model",
+    "name": "Default Model",
+    "description": "Baseline model profile for opencode tasks.",
+    "cli_tool": "opencode",
+    "source_kind": "managed",
+    "source_path": "backend/data/managed/mcps/opencode/default.json",
+    "is_writable": true,
+    "model_name": "gpt-5.4",
+    "temperature": 0.2,
+    "max_tokens": 8192,
+    "top_p": 1.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "extra_params": {
+      "reasoning_effort": "medium"
+    },
+    "created_at": "2026-03-19T00:00:00+00:00",
+    "updated_at": "2026-03-19T00:00:00+00:00"
+  }
+]

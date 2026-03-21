@@ -1,0 +1,6 @@
+{
+  "id": "opencode-default-model",
+  "name": "Default Model",
+  "model_name": "gpt-5.4",
+  "temperature": 0.2
+}

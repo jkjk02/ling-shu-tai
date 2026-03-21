@@ -1,0 +1,20 @@
+[
+  {
+    "id": "codex-skill-bootstrap",
+    "name": "Bootstrap Workspace",
+    "description": "Prepare a new workspace layout for a Codex task.",
+    "cli_tool": "codex",
+    "source_kind": "managed",
+    "source_path": "backend/data/managed/skills/codex/bootstrap.json",
+    "is_writable": true,
+    "trigger_command": "/bootstrap",
+    "script_content": "Create the folders, read docs, and summarize the plan.",
+    "script_language": "markdown",
+    "tags": [
+      "setup",
+      "workspace"
+    ],
+    "created_at": "2026-03-19T00:00:00+00:00",
+    "updated_at": "2026-03-19T00:00:00+00:00"
+  }
+]

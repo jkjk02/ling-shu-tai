@@ -1,0 +1,31 @@
+{
+  "name": "ling-shu-tai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "check:backend": "backend/.venv/bin/python -m py_compile backend/app/config.py backend/tests/support.py backend/tests/test_api_regression.py",
+    "test:backend": "backend/.venv/bin/python -m unittest discover -s backend/tests",
+    "test:browser": "playwright test -c playwright.smoke.config.ts",
+    "verify": "npm run check:backend && npm run test:backend && npm run build && npm run test:browser",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.8.4",
+    "element-plus": "^2.9.8",
+    "monaco-editor": "^0.55.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^22.13.14",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.2",
+    "vue-tsc": "^2.2.8"
+  }
+}

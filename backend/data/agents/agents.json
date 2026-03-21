@@ -1,0 +1,19 @@
+[
+  {
+    "id": "planner-agent",
+    "name": "Planner Agent",
+    "description": "Coordinates implementation steps.",
+    "system_prompt": "Break work into staged deliverables and keep handoffs precise.",
+    "skill_ids": [
+      "codex-skill-bootstrap"
+    ],
+    "mcp_id": "opencode-default-model",
+    "cli_tool": "codex",
+    "tool_scope": [
+      "codex",
+      "opencode"
+    ],
+    "created_at": "2026-03-19T00:00:00+00:00",
+    "updated_at": "2026-03-19T00:00:00+00:00"
+  }
+]

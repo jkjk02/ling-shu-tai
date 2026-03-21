@@ -1,0 +1,16 @@
+<script setup lang="ts">
+defineProps<{
+  title: string;
+  description: string;
+}>();
+</script>
+
+<template>
+  <div class="section-header">
+    <div>
+      <h3>{{ title }}</h3>
+      <p>{{ description }}</p>
+    </div>
+    <slot />
+  </div>
+</template>

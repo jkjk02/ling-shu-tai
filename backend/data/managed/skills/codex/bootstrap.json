@@ -1,0 +1,6 @@
+{
+  "id": "codex-skill-bootstrap",
+  "name": "Bootstrap Workspace",
+  "description": "Prepare a new workspace layout for a Codex task.",
+  "trigger_command": "/bootstrap"
+}
