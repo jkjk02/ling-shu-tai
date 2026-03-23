@@ -50,7 +50,7 @@
    - `dashboard` / `discovery`
 4. 当前未覆盖项：
    - 浏览器级交互与前端画布行为
-   - CI 平台集成
+   - GitHub Actions 远端运行结果本身
 
 ### 浏览器级冒烟自动化
 
@@ -61,7 +61,7 @@
    - 打开 Chromium，验证 `Dashboard`、`Skills`、`Agents`、`Workflows` 页面可打开
    - 验证 `MCPs` 页面可见 discovered MCP 状态，并能完成 managed MCP 的真实创建提交与删除清理
    - 验证 `Workflows` 页面可完成节点创建、连线、画布拖拽、保存、刷新回读与删除清理
-3. 本机若已存在 Playwright Chromium 缓存，会直接复用；CI 需先执行 `npx playwright install chromium`
+3. 本机若已存在 Playwright Chromium 缓存，会直接复用；GitHub Actions 中会执行 `npx playwright install --with-deps chromium`
 4. 当前覆盖边界：
    - 页面导航与主区域渲染
    - MCP 页面受支持 / 只读 discovered 资源状态展示
@@ -83,17 +83,29 @@
    - `npm run build`
    - `npm run test:browser`
 5. 这些命令依赖项目内 `backend/.venv` 已按前文完成初始化
+6. 若要在本地尽量贴近远端 runner 方式执行，可使用：`CI=1 npm run verify`
 
-### CI 骨架
+### GitHub Actions CI
 
-1. 仓库已提供 GitHub Actions 骨架：`.github/workflows/ci.yml`
-2. 当前 CI 骨架覆盖：
+1. 仓库已提供 GitHub Actions workflow：`.github/workflows/ci.yml`
+2. 当前 workflow 触发方式：
+   - `push`
+   - `pull_request`
+   - `workflow_dispatch`
+3. 当前 workflow 覆盖：
    - `npm ci`
    - Python 3.12 环境准备
+   - pip cache
    - `backend/.venv` 创建与后端依赖安装
-   - `npx playwright install chromium`
+   - `npx playwright install --with-deps chromium`
    - `npm run verify`
-3. 当前目录不是 Git 仓库，且未连接真实 GitHub 远端，因此这里只是预置工作流文件，不代表已在线上流水线中实际触发
+4. workflow 还补充了：
+   - `timeout-minutes`
+   - concurrency 取消同分支旧任务
+   - 最小只读 `permissions`
+   - `test-results/` 与 `playwright-report/` artifact 上传
+5. 本仓库已配置 GitHub 远端 `origin`；将改动推送到带有 workflow 文件的分支后，即可由 GitHub Actions 真实执行
+6. 本地无法直接替代 GitHub 平台 run 记录，但可通过 `CI=1 npm run verify` 先做近似仿真
 
 ### Monaco Editor
 
@@ -114,7 +126,7 @@
 7. 已支持从真实 Codex `SKILL.md` 以及 `cludea` / `opencode` 候选目录中的文本型 Skill 文件发现外部 Skills，并以只读资源方式展示到 `Skills`、`Dashboard`、`Discovery`
 8. 已支持从 `cludea` / `opencode` 候选目录中的 JSON MCP 文件发现外部 MCPs，并对受支持的 JSON 对象文件提供创建、回写、删除闭环
 9. 已完成项目内 JSON 示例数据与 managed 目录初始化
-10. 已完成后端 API 自动化回归入口、浏览器级页面冒烟自动化、统一验证命令、GitHub Actions CI 骨架、Monaco 编辑体验升级与受限范围内的外部 MCP 回写；真实远端 CI 落地和更复杂外部 MCP 方言适配仍未完成
+10. 已完成后端 API 自动化回归入口、浏览器级页面冒烟自动化、统一验证命令、GitHub Actions CI 远端运行配置加固、Monaco 编辑体验升级与受限范围内的外部 MCP 回写；更复杂外部 MCP 方言适配仍未完成
 
 ## 何时使用
 
