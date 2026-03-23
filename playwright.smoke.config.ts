@@ -6,7 +6,6 @@ import { defineConfig } from '@playwright/test';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const fixturesRoot = path.resolve(__dirname, 'backend/tests/fixtures');
 const chromiumExecutable = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
   ? path.resolve(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE)
   : '/root/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome';
@@ -34,16 +33,10 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: 'backend/.venv/bin/python -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000',
+      command: 'backend/.venv/bin/python backend/tests/playwright_backend.py --host 127.0.0.1 --port 8000',
       url: 'http://127.0.0.1:8000/api/health',
       timeout: 30_000,
       reuseExistingServer: !process.env.CI,
-      env: {
-        ...process.env,
-        LINGSHU_CODEX_ROOT: path.join(fixturesRoot, 'codex'),
-        LINGSHU_CLUDEA_ROOT: path.join(fixturesRoot, 'cludea'),
-        LINGSHU_OPENCODE_ROOT: path.join(fixturesRoot, 'opencode'),
-      },
     },
     {
       command: 'npm run dev -- --host 127.0.0.1 --port 4173',

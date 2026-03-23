@@ -41,3 +41,36 @@ test('mcp page shows discovered states and create dialog', async ({ page }) => {
   await expect(installTargetGroup.getByText('managed', { exact: true })).toBeVisible();
   await expect(installTargetGroup.getByText('external', { exact: true })).toBeVisible();
 });
+
+test('mcp page can submit a managed MCP through the real backend', async ({ page }) => {
+  const createdName = 'Browser Managed MCP';
+  const createdDescription = 'Managed MCP created by Playwright browser automation';
+  const createdModelName = 'gpt-5.4-mini';
+
+  await page.goto('/mcps');
+
+  await page.getByTestId('mcp-create-button').click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('textbox', { name: '*名称', exact: true }).fill(createdName);
+  await dialog.getByRole('textbox', { name: '描述', exact: true }).fill(createdDescription);
+  await dialog.getByRole('textbox', { name: '*模型名称', exact: true }).fill(createdModelName);
+  await dialog.getByRole('button', { name: '保存' }).click();
+
+  await expect(dialog).toBeHidden();
+  await expect(page.locator('.el-table')).toContainText(createdName);
+
+  await page.reload();
+  await expect(page.locator('.el-table')).toContainText(createdName);
+
+  const createdRow = page.locator('.el-table__body tr').filter({ hasText: createdName });
+  await createdRow.getByText(createdName).click();
+
+  const detailCard = page.locator('.split-grid > .el-card').nth(1);
+  await expect(detailCard.getByText('MCP 详情')).toBeVisible();
+  await expect(detailCard).toContainText(createdModelName);
+  await expect(detailCard).toContainText(createdDescription);
+
+  await createdRow.getByRole('button', { name: '删除' }).click();
+  await page.getByRole('button', { name: '确认删除' }).click();
+  await expect(page.locator('.el-table')).not.toContainText(createdName);
+});

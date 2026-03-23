@@ -56,18 +56,20 @@
 
 1. 运行命令：`npm run test:browser`
 2. 当前测试会自动：
-   - 启动真实后端 `uvicorn`
+   - 启动带隔离数据目录的真实后端 `uvicorn`
    - 启动前端 Vite 开发服务器，并通过 `/api` 代理访问后端
    - 打开 Chromium，验证 `Dashboard`、`Skills`、`Agents`、`Workflows` 页面可打开
-   - 验证 `MCPs` 页面可见 discovered MCP 状态，并能打开“新建 MCP”对话框
+   - 验证 `MCPs` 页面可见 discovered MCP 状态，并能完成 managed MCP 的真实创建提交与删除清理
+   - 验证 `Workflows` 页面可完成节点创建、连线、画布拖拽、保存、刷新回读与删除清理
 3. 本机若已存在 Playwright Chromium 缓存，会直接复用；CI 需先执行 `npx playwright install chromium`
 4. 当前覆盖边界：
    - 页面导航与主区域渲染
    - MCP 页面受支持 / 只读 discovered 资源状态展示
-   - MCP 新建对话框基础可见性
+   - MCP 新建对话框与 managed MCP 真实提交闭环
+   - Workflow 画布最小业务闭环：加点、连线、拖拽、保存、刷新回读、删除
 5. 当前未覆盖项：
    - 复杂 CRUD 提交
-   - 浏览器级 Workflow 画布拖拽
+   - Workflow 更复杂异常矩阵与视觉回归
    - 视觉回归
 
 ### 统一验证入口

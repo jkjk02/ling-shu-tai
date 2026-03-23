@@ -81,9 +81,12 @@ const interactionState = reactive({
   viewportY: 0,
 });
 
-const selectedWorkflow = computed(
-  () => workflows.value.find((item) => item.id === selectedWorkflowId.value) ?? workflows.value[0] ?? null,
-);
+const selectedWorkflow = computed(() => {
+  if (!selectedWorkflowId.value) {
+    return null;
+  }
+  return workflows.value.find((item) => item.id === selectedWorkflowId.value) ?? null;
+});
 
 const selectedNode = computed(
   () => editor.nodes.find((node) => node.id === selectedNodeId.value) ?? editor.nodes[0] ?? null,
@@ -738,10 +741,11 @@ loadPageData();
       description="把最小工作流编辑器提升成更接近真实编排器的体验：节点模板、缩放平移、连线条件、校验提示与结构化节点配置。"
     >
       <div class="skills-toolbar">
-        <el-button @click="startNewWorkflow">新建 Workflow</el-button>
-        <el-button type="primary" :disabled="!hasRealBackend" :loading="saving" @click="saveWorkflow">保存 Workflow</el-button>
+        <el-button data-testid="workflow-new-button" @click="startNewWorkflow">新建 Workflow</el-button>
+        <el-button data-testid="workflow-save-button" type="primary" :disabled="!hasRealBackend" :loading="saving" @click="saveWorkflow">保存 Workflow</el-button>
         <el-button
           v-if="selectedWorkflow"
+          data-testid="workflow-delete-button"
           type="danger"
           plain
           :disabled="!hasRealBackend"
@@ -763,7 +767,7 @@ loadPageData();
           </div>
         </template>
 
-        <el-table v-loading="loading" :data="workflows" row-key="id" empty-text="暂无 Workflow" @row-click="selectWorkflow">
+        <el-table data-testid="workflow-list-table" v-loading="loading" :data="workflows" row-key="id" empty-text="暂无 Workflow" @row-click="selectWorkflow">
           <el-table-column prop="name" label="名称" min-width="170" />
           <el-table-column prop="description" label="描述" min-width="220" show-overflow-tooltip />
           <el-table-column label="节点" width="90">
@@ -793,7 +797,7 @@ loadPageData();
           <div class="page-stack">
             <div class="split-grid">
               <el-form-item label="名称" class="form-item-reset">
-                <el-input v-model="editor.name" placeholder="例如：交付流水线" />
+                <el-input v-model="editor.name" data-testid="workflow-name-input" placeholder="例如：交付流水线" />
               </el-form-item>
 
               <el-form-item label="缩放" class="form-item-reset">
@@ -802,7 +806,13 @@ loadPageData();
             </div>
 
             <el-form-item label="描述" class="form-item-reset">
-              <el-input v-model="editor.description" type="textarea" :rows="3" placeholder="描述这个 Workflow 的目标与适用场景" />
+              <el-input
+                v-model="editor.description"
+                data-testid="workflow-description-input"
+                type="textarea"
+                :rows="3"
+                placeholder="描述这个 Workflow 的目标与适用场景"
+              />
             </el-form-item>
 
             <div class="summary-stats">
@@ -827,8 +837,8 @@ loadPageData();
             <div class="card-header">
               <strong>编排画布</strong>
               <div class="table-actions">
-                <el-button text @click="fitView">适配视图</el-button>
-                <el-button text @click="autoLayout">自动布局</el-button>
+                <el-button data-testid="workflow-fit-view-button" text @click="fitView">适配视图</el-button>
+                <el-button data-testid="workflow-auto-layout-button" text @click="autoLayout">自动布局</el-button>
                 <el-button text @click="zoomBy(-0.1)">缩小</el-button>
                 <el-button text @click="zoomBy(0.1)">放大</el-button>
                 <el-button text @click="resetViewport">重置</el-button>
@@ -847,6 +857,7 @@ loadPageData();
                 :key="template.kind"
                 class="workflow-palette__item"
                 type="button"
+                :data-testid="`workflow-template-${template.kind}`"
                 :style="{ '--workflow-accent': template.accent }"
                 @click="addNodeFromTemplate(template)"
               >
@@ -860,6 +871,7 @@ loadPageData();
 
             <div
               ref="canvasBoardRef"
+              data-testid="workflow-canvas-board"
               class="workflow-board"
               @mousedown="startCanvasPan"
               @wheel.passive.prevent="handleCanvasWheel"
@@ -920,6 +932,9 @@ loadPageData();
                   <article
                     v-for="node in editor.nodes"
                     :key="node.id"
+                    :data-testid="`workflow-node-${node.id}`"
+                    :data-node-id="node.id"
+                    :data-node-label="node.label"
                     class="workflow-node"
                     :class="[
                       `workflow-node--${getNodeKind(node)}`,
@@ -928,11 +943,16 @@ loadPageData();
                     :style="{ left: `${node.x}px`, top: `${node.y}px` }"
                     @click="selectedNodeId = node.id"
                   >
-                    <button class="workflow-node__port workflow-node__port--in" type="button" @click.stop="completeConnection(node.id)">
+                    <button
+                      class="workflow-node__port workflow-node__port--in"
+                      :data-testid="`workflow-node-port-in-${node.id}`"
+                      type="button"
+                      @click.stop="completeConnection(node.id)"
+                    >
                       输入
                     </button>
 
-                    <div class="workflow-node__body" @mousedown.prevent="startNodeDrag(node, $event)">
+                    <div class="workflow-node__body" :data-testid="`workflow-node-body-${node.id}`" @mousedown.prevent="startNodeDrag(node, $event)">
                       <div class="workflow-node__meta">
                         <el-tag size="small" effect="plain">{{ getNodeKind(node) }}</el-tag>
                         <el-tag size="small" :type="getNodeStatus(node) === 'blocked' ? 'danger' : getNodeStatus(node) === 'done' ? 'success' : 'info'">
@@ -944,7 +964,12 @@ loadPageData();
                       <p>{{ getNodeStage(node) }}</p>
                     </div>
 
-                    <button class="workflow-node__port workflow-node__port--out" type="button" @click.stop="beginConnection(node.id)">
+                    <button
+                      class="workflow-node__port workflow-node__port--out"
+                      :data-testid="`workflow-node-port-out-${node.id}`"
+                      type="button"
+                      @click.stop="beginConnection(node.id)"
+                    >
                       输出
                     </button>
                   </article>
