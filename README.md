@@ -106,6 +106,11 @@
    - `test-results/` 与 `playwright-report/` artifact 上传
 5. 本仓库已配置 GitHub 远端 `origin`；将改动推送到带有 workflow 文件的分支后，即可由 GitHub Actions 真实执行
 6. 本地无法直接替代 GitHub 平台 run 记录，但可通过 `CI=1 npm run verify` 先做近似仿真
+7. 当前已验证通过的真实触发方式：
+   - `push` 到 `main`
+   - `push` 到临时验证分支
+   - `workflow_dispatch`
+   - `pull_request`
 
 ### Monaco Editor
 
@@ -126,7 +131,7 @@
 7. 已支持从真实 Codex `SKILL.md` 以及 `cludea` / `opencode` 候选目录中的文本型 Skill 文件发现外部 Skills，并以只读资源方式展示到 `Skills`、`Dashboard`、`Discovery`
 8. 已支持从 `cludea` / `opencode` 候选目录中的 JSON MCP 文件发现外部 MCPs，并对受支持的 JSON 对象文件提供创建、回写、删除闭环
 9. 已完成项目内 JSON 示例数据与 managed 目录初始化
-10. 已完成后端 API 自动化回归入口、浏览器级页面冒烟自动化、统一验证命令、GitHub Actions CI 远端运行配置加固、Monaco 编辑体验升级与受限范围内的外部 MCP 回写；更复杂外部 MCP 方言适配仍未完成
+10. 已完成后端 API 自动化回归入口、浏览器级页面冒烟自动化、统一验证命令、GitHub Actions CI 远端运行配置加固，以及 `push / workflow_dispatch / pull_request` 真实触发验证；更复杂外部 MCP 方言适配仍未完成
 
 ## 何时使用
 
