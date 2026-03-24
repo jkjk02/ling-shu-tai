@@ -2,12 +2,6 @@
 
 灵枢台是一个面向 Linux 的本地 Web 管理台，用来统一查看和维护 `codex`、`cludea`、`opencode` 等 CLI 工具的 Skills、MCPs、Agents 和 Workflows。
 
-只保留：
-
-1. Git 只保留 `main`
-2. 交付形态只保留 Linux Web
-3. 不提供 Windows 包
-
 ## 环境要求
 
 1. Linux
